@@ -25,6 +25,7 @@ async function displayRepos(username) {
         let repoHyperlink = document.createElement('a');
         repoHyperlink.href = html_url;
         repoHyperlink.textContent = name;
+        repoHyperlink.target = '_blank';
         repoName.appendChild(repoHyperlink);
         document.getElementById('repo-names').appendChild(repoName);
     }

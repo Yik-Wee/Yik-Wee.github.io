@@ -5,8 +5,8 @@ body {
     color: white;
     background-color: #202731;
     width: 100%;
-    padding: 0;
-    overflow: hidden;
+    margin: 0;
+    /* overflow: hidden; */
 }
 
 section {
@@ -17,8 +17,9 @@ section {
 }
 
 .spacer {
-    aspect-ratio: 900/600;
+    /* aspect-ratio: 900/600; */
     width: 100%;
+    min-height: 200px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -30,10 +31,9 @@ section {
 
 #repos {
     text-align: center;
-    /* width: 90%; */
 }
 
-#repos>* {
+#repos>:not(.accordion) {
     background-color: transparent;
 }
 
@@ -46,21 +46,21 @@ li {
 }
 
 .accordion {
-    background-color: #eee;
+    background-color: #2a3646;
     color: white;
     cursor: pointer;
     padding: 18px;
-    /* width: 100%; */
+    width: 50%;
     border: none;
     outline: none;
     transition: 0.4s;
 }
   
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .accordion:hover {
-    background-color: #ccc;
-}
-  
+/* .active, .accordion:hover {
+    background-color: #212a36;
+} */
+
 /* Style the accordion panel. Note: hidden by default */
 .panel {
     padding: 0 18px;
