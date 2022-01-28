@@ -1,34 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200&display=swap');
 
-* {
-    font-family: 'Roboto';
+body {
+    font-family: 'JetBrains Mono', monospace;
+    color: white;
+    background-color: #202731;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
 }
 
-h1 {
-    font-size: 72px;  
+section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-h2 {
-    color: #00ff00;
+.spacer {
+    aspect-ratio: 900/600;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
-h4.job-title {
+.polygon-bg {
+    background-image: url('./polygons.svg');
 }
 
-h2#menu {
-    font-weight: bold;
-    font-size: 14px;
-    color: purple;
+#repos {
+    text-align: center;
+    /* width: 90%; */
+}
+
+#repos>* {
+    background-color: transparent;
 }
 
 a {
-    color: purple;
+    color: aquamarine;
 }
 
-h2#job {
-    color: blue;
+li {
+    list-style: none
 }
 
-/* .navlink {
-    color: red;
-} */
+.accordion {
+    background-color: #eee;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    /* width: 100%; */
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+  
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+    background-color: #ccc;
+}
+  
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
+  
