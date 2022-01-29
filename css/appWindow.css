@@ -1,3 +1,13 @@
+i {
+    /* background-color: #7F7FFF; */
+    background-color: #7FFFbF;
+}
+
+h1 {
+    border-bottom: 4px solid #FFBF7F;
+    display: inline;
+}
+
 .wrapper {
     position: absolute;
     z-index: 2;
@@ -5,6 +15,7 @@
     border: 2px solid;
     resize: both;
     overflow: auto;
+    border-radius: 4px;
 }
 
 .window-focus {
@@ -12,16 +23,37 @@
 }
 
 .window-top {
+    color: black;
     width: inherit;
     height: 26px;
     align-items: center;
     position: sticky;
-    background: blue;
+    background: #7FBFFF;
     cursor: default;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     column-gap: 16px;
+}
+
+.title-area {
+    margin-left: 1ch;
+}
+
+.quit-button {
+    color: inherit;
+    width: 4ch;
+    height: calc(100% - 4px);
+    margin: 4px;
+    background-color: #FF7F7F;
+    border-width: 0;
+    border-radius: 2px;
+    text-align: center;
+    transition: background-color 100ms ease-in-out;
+}
+
+.quit-button:hover {
+    background-color: #FF5050;
 }
 
 .window-body {
