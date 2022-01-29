@@ -36,12 +36,13 @@ function makeDraggable(element, childElement) {
     };
 }
 
-/**
- *
- * @param {HTMLElement} element The element to make resizable by dragging its borders
- * @param {HTMLElement} handle The border of the element
- */
-function makeResizable(element, handle) {}
+// TODO
+// /**
+//  *
+//  * @param {HTMLElement} element The element to make resizable by dragging its borders
+//  * @param {HTMLElement} handle The border of the element
+//  */
+// function makeResizable(element, handle) {}
 
 /**
  *
@@ -63,53 +64,28 @@ function makeFocusable(appWindow) {
     appWindow.addEventListener("touchstart", onClick);
 }
 
-const appWindowIdPrefix = "app-window-";
-
-/**
- *
- * @param {string | number} windowNumber the id of the window to remove
- */
-function removeAppWindow(windowNumber) {
-    const windowId = `${appWindowIdPrefix}${windowNumber}`;
-    const appWindow = document.getElementById(windowId);
-
-    if (appWindow != null) {
-        appWindow.remove();
-        AppWindow.windowCount--;
-        console.log(AppWindow.windowCount, "windows active");
-    } else {
-        console.log(`<app-window id="${windowId}"> not found`);
-    }
-}
+const appWindowPrefix = "app-window-";
 
 class AppWindow extends HTMLElement {
-    static windowCount = 0;
     static activeWindows = [];
 
     constructor() {
         super();
         AppWindow.activeWindows.push(this);
-        AppWindow.windowCount++;
-        console.log(AppWindow.windowCount, "windows active");
     }
 
     connectedCallback() {
         let shadow = this.attachShadow({ mode: "open" });
-        this.setAttribute("id", `${appWindowIdPrefix}${AppWindow.windowCount}`);
 
         // Make the window (div)
         let width = this.getAttribute("width") || "200px";
         let height = this.getAttribute("height") || "200px";
         const wrapper = document.createElement("div");
         wrapper.setAttribute("class", "wrapper");
-        wrapper.setAttribute("style", `height: ${height}; width: ${width};`);
         wrapper.style.height = height;
         wrapper.style.width = width;
-        wrapper.style.top =
-            100 + Math.random() * (window.screen.height - 500) + "px";
-        wrapper.style.left =
-            100 + Math.random() * (document.body.clientWidth - 300) + "px";
-        console.log(document.body.clientWidth, window.screen.height);
+        wrapper.style.top = this.getAttribute("pos-y") || "0";
+        wrapper.style.left = this.getAttribute("pos-x") || "0";
 
         // Make the top of window (title + quit 'x')
         const top = document.createElement("div");
@@ -120,10 +96,15 @@ class AppWindow extends HTMLElement {
         titleArea.setAttribute("class", "overflow-ellipses title-area");
         titleArea.textContent = title;
 
-        const quitButton = document.createElement("button");
+        this.setAttribute("id", appWindowPrefix + title.toLowerCase()); // <app-window id={title}></app-window>
+
+        const quitButton = document.createElement("div");
+        quitButton.setAttribute("class", "quit-button");
         quitButton.textContent = "x";
-        quitButton.addEventListener("click", () => removeAppWindow(AppWindow.windowCount));
-        quitButton.addEventListener("touchstart", () => removeAppWindow(AppWindow.windowCount));
+
+        // click/touchstart to remove window
+        quitButton.addEventListener("click", this.remove.bind(this));
+        quitButton.addEventListener("touchstart", this.remove.bind(this));
 
         top.append(titleArea, quitButton);
 
@@ -150,6 +131,8 @@ class AppWindow extends HTMLElement {
 
         shadow.append(style, wrapper);
         this.wrapper = wrapper;
+
+        this.animate([{ opacity: "0" }, { opacity: "1" }], { duration: 250 });
     }
 
     isFocussed() {
@@ -166,3 +149,32 @@ class AppWindow extends HTMLElement {
 }
 
 customElements.define("app-window", AppWindow);
+
+function spawnWindow(appWindowAttrs, appWindowInnerHTML) {
+    const windowId = appWindowPrefix + appWindowAttrs.title?.toLowerCase();
+    const possibleAppWindow = document.getElementById(windowId);
+    if (possibleAppWindow) {
+        possibleAppWindow.click(); // click to focus the window
+        console.log(`${windowId} already exists`);
+        return;
+    }
+
+    const windows = document.getElementById("windows");
+    const newWindow = document.createElement("app-window");
+    for (const attr in appWindowAttrs) {
+        newWindow.setAttribute(attr, appWindowAttrs[attr]);
+    }
+    newWindow.innerHTML = appWindowInnerHTML;
+    windows.appendChild(newWindow);
+    return newWindow;
+}
+
+window.onload = (e) => {  // spawn each AppWindow after delay
+    const spawnDelay = 250;
+    setTimeout(() => {
+        spawnWindow(aboutMeAttrs, aboutMeHTML);
+    }, spawnDelay);
+    setTimeout(() => {
+        spawnWindow(languagesAttrs, languagesHTML);
+    }, spawnDelay*2);
+};
