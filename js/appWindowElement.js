@@ -72,6 +72,7 @@ const appWindowIdPrefix = "app-window-";
 function removeAppWindow(windowNumber) {
     const windowId = `${appWindowIdPrefix}${windowNumber}`;
     const appWindow = document.getElementById(windowId);
+
     if (appWindow != null) {
         appWindow.remove();
         AppWindow.windowCount--;
@@ -121,10 +122,8 @@ class AppWindow extends HTMLElement {
 
         const quitButton = document.createElement("button");
         quitButton.textContent = "x";
-        quitButton.setAttribute(
-            "onclick",
-            `removeAppWindow(${AppWindow.windowCount})`
-        );
+        quitButton.addEventListener("click", () => removeAppWindow(AppWindow.windowCount));
+        quitButton.addEventListener("touchstart", () => removeAppWindow(AppWindow.windowCount));
 
         top.append(titleArea, quitButton);
 
