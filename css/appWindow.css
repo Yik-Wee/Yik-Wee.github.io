@@ -1,0 +1,40 @@
+.wrapper {
+    position: absolute;
+    z-index: 2;
+    background-color: grey;
+    border: 2px solid;
+    resize: both;
+    overflow: auto;
+}
+
+.window-focus {
+    z-index: 3;
+}
+
+.window-top {
+    width: inherit;
+    height: 26px;
+    align-items: center;
+    position: sticky;
+    background: blue;
+    cursor: default;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 16px;
+}
+
+.window-body {
+    color: black;
+    overflow-y: auto;
+    background: lightgrey;
+    width: 100%;
+    height: calc(100% - 26px);
+    text-align: center;
+}
+
+.overflow-ellipses {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
