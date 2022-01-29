@@ -5,31 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yik Wee's Portfolio</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script type="text/javascript" src="js/githubAPI.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/appWindowElement.js"></script>
 </head>
 
 <body>
-    <div id="info">
-        <section style="background-color: #4776f8;">
-            <h1>Koh Yik Wee</h1>
-        </section>
-        <section class="spacer polygon-bg">
-            <h2>Languages:</h2>
-            <p>
-                I know <i>Python</i> and <i>HTML/CSS/JS/TS</i>
-            </p>
-            <p>
-                I've also written some <i>Bash</i> and <i>Rust</i> before
-            </p>
-
-        </section>
-        <div id="repos">
-            <button class="accordion">Repos:</button>
-            <div class="panel" id="repo-names">
-            </div>
-        </div>
-    </div>
+    <app-window title="About me" height="40vw" width="35vh">
+        <h1>Koh Yik Wee</h1>
+        <p>Currently unemployed</p>
+        <p>
+            I make stuff I find interesting sometimes. You can find it on my
+            <a href="https://github.com/yik-wee" target="_blank">GitHub</a>
+        </p>
+    </app-window>
+    <app-window title="Languages" width="38vw" height="45vh">
+        <h1>Languages</h1>
+        <hr>
+        <p><i>Python</i> and <i>HTML/CSS/JS/TS</i></p>
+        <h2>Others:</h2>
+        <p>I've written some <i>Rust</i> and <i>Bash</i> before</p>
+        <p>I've also used <i>React</i> before</p>
+    </app-window>
 </body>
 
 </html>
