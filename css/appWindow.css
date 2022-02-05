@@ -70,3 +70,23 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.repos {
+    display: block;
+    padding: 2ch;
+    border: 4px solid #7F7FFF;
+    border-radius: 4px;
+}
+
+.displaying-repos {
+    border-bottom: #FFBF7F;
+    border-bottom: 4px solid #FFBF7F;
+}
+
+.repo-hyperlink {
+    display: block;
+}
+
+.repo-hyperlink::before {
+    content: "->";
+}
