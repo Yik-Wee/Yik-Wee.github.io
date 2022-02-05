@@ -7,6 +7,7 @@
     <title>Yik Wee's Portfolio</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="js/appWindowElement.js"></script>
+    <script src="js/githubAPI.js"></script>
 </head>
 
 <body>
@@ -34,14 +35,40 @@
                 <a href="https://github.com/yik-wee" target="_blank">GitHub</a>
             </p>
         </app-window>
-
+        <!-- oh my god wat are these onclick events this isn't react what am i doing -->
         <app-window title="Languages" height="35vh" width="30vw" pos-x="45vw" pos-y="31vh">
             <h1>Languages</h1>
-            <p><i>Python</i> and <i>HTML/CSS/JS/TS</i></p>
+            <div id="repos"></div>
+            <p>
+                <i onclick="displayReposByLang(
+                    this,
+                    event,
+                    'Python'
+                )">Python</i> and
+                <i onclick="displayReposByLang(
+                    this,
+                    event,
+                    'HTML',
+                    'CSS',
+                    'JavaScript',
+                    'TypeScript'
+                )">HTML/CSS/JS && TS/React</i>
+            </p>
             <p>(I cannot c/c++ lmao)</p>
             <h2>Others:</h2>
-            <p>I've written some <i>Rust</i> and <i>Bash</i> before</p>
-            <p>I've also used <i>React</i> before</p>
+            <p>
+                I've written some 
+                <i onclick="displayReposByLang(
+                    this,
+                    event,
+                    'Rust'
+                )">Rust</i> and 
+                <i onclick="displayReposByLang(
+                    this,
+                    event,
+                    'Shell'
+                )">Bash</i> before
+            </p>
         </app-window>
     </div>
 </body>
