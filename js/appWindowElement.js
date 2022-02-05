@@ -1,3 +1,5 @@
+const appWindowPrefix = "app-window-";
+
 /**
  *
  * @param {HTMLElement} element The element to make draggable
@@ -36,36 +38,6 @@ function makeDraggable(element, childElement) {
     };
 }
 
-// TODO
-// /**
-//  *
-//  * @param {HTMLElement} element The element to make resizable by dragging its borders
-//  * @param {HTMLElement} handle The border of the element
-//  */
-// function makeResizable(element, handle) {}
-
-/**
- *
- * @param {AppWindow} appWindow
- */
-function makeFocusable(appWindow) {
-    function onClick(e) {
-        if (appWindow.isFocussed()) return;
-
-        for (let win of AppWindow.activeWindows) {
-            if (win.isFocussed()) {
-                win.unfocusAppWindow();
-            }
-        }
-        appWindow.focusAppWindow();
-    }
-
-    appWindow.addEventListener("click", onClick);
-    appWindow.addEventListener("touchstart", onClick);
-}
-
-const appWindowPrefix = "app-window-";
-
 class AppWindow extends HTMLElement {
     static activeWindows = [];
 
@@ -96,7 +68,13 @@ class AppWindow extends HTMLElement {
         titleArea.setAttribute("class", "overflow-ellipses title-area");
         titleArea.textContent = title;
 
-        this.setAttribute("id", appWindowPrefix + title.toLowerCase()); // <app-window id={title}></app-window>
+        // id not set - auto set id
+        // e.g. <app-window title="About Me" id="app-window-about-me"></app-window>
+        if (!this.getAttribute("id")) {
+            const thisId =
+                appWindowPrefix + title.trim().toLowerCase().replace(" ", "-");
+            this.setAttribute("id", thisId);
+        }
 
         const quitButton = document.createElement("div");
         quitButton.setAttribute("class", "quit-button");
@@ -110,8 +88,19 @@ class AppWindow extends HTMLElement {
 
         // make window draggable
         makeDraggable(wrapper, top);
-        makeFocusable(this);
-        // TODO make resizable
+
+        // make focussable (z-index++ on click)
+        this.onclick = this.ontouchstart = (e) => {
+            if (this.isFocussed()) return;
+
+            // in case >1 windows focussed (ppl hackermans the html)
+            for (const win of AppWindow.activeWindows) {
+                if (win.isFocussed()) {
+                    win.unfocusAppWindow();
+                }
+            }
+            this.focusAppWindow();
+        };
 
         // make the body of the window
         const body = document.createElement("div");
@@ -131,7 +120,10 @@ class AppWindow extends HTMLElement {
 
         shadow.append(style, wrapper);
         this.wrapper = wrapper;
+        this.fadeIn();
+    }
 
+    fadeIn() {
         this.animate([{ opacity: "0" }, { opacity: "1" }], { duration: 250 });
     }
 
@@ -150,31 +142,27 @@ class AppWindow extends HTMLElement {
 
 customElements.define("app-window", AppWindow);
 
-function spawnWindow(appWindowAttrs, appWindowInnerHTML) {
-    const windowId = appWindowPrefix + appWindowAttrs.title?.toLowerCase();
-    const possibleAppWindow = document.getElementById(windowId);
-    if (possibleAppWindow) {
-        possibleAppWindow.click(); // click to focus the window
-        console.log(`${windowId} already exists`);
-        return;
-    }
-
-    const windows = document.getElementById("windows");
-    const newWindow = document.createElement("app-window");
-    for (const attr in appWindowAttrs) {
-        newWindow.setAttribute(attr, appWindowAttrs[attr]);
-    }
-    newWindow.innerHTML = appWindowInnerHTML;
-    windows.appendChild(newWindow);
-    return newWindow;
+function getAppWindowById(id) {
+    return document.getElementById(id);
 }
 
-window.onload = (e) => {  // spawn each AppWindow after delay
-    const spawnDelay = 250;
-    setTimeout(() => {
-        spawnWindow(aboutMeAttrs, aboutMeHTML);
-    }, spawnDelay);
-    setTimeout(() => {
-        spawnWindow(languagesAttrs, languagesHTML);
-    }, spawnDelay*2);
+window.onload = (e) => {
+    const windowsContainer = document.getElementById("windows");
+
+    const aboutMeId = appWindowPrefix + "about-me";
+    const aboutMe = getAppWindowById(aboutMeId);
+    window.spawnAboutMe = () => {
+        if (getAppWindowById(aboutMeId)) return;
+        windowsContainer.append(aboutMe);
+        // app-window elems alr init'd so connectedCallback/fadeIn won't be called again
+        aboutMe.fadeIn();
+    };
+
+    const languagesId = appWindowPrefix + "languages";
+    const languages = getAppWindowById(languagesId);
+    window.spawnLanguages = () => {
+        if (getAppWindowById(languagesId)) return;
+        windowsContainer.append(languages);
+        languages.fadeIn();
+    };
 };

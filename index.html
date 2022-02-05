@@ -12,42 +12,11 @@
 <body>
     <div class="desktop">
         <div class="menu">
-            <!-- me hardcoding all the 'app' windows lol no brain cells left -->
-            <script>
-                const aboutMeAttrs = {
-                    title: "About Me",
-                    height: "28vh",
-                    width: "30vw",
-                    "pos-x": "5vw",
-                    "pos-y": "25vh",
-                };
-                const aboutMeHTML = `
-                    <h1>Koh Yik Wee</h1>
-                    <p>Currently unemployed</p>
-                    <p>
-                        I make stuff I find interesting sometimes. You can find it on my
-                        <object data="/assets/github.svg" type="image/svg+xml" width="20ch"></object>
-                        <a href="https://github.com/yik-wee" target="_blank">GitHub</a>
-                    </p>`;
-
-                const languagesAttrs = {
-                    title: "Languages",
-                    width: "30vw",
-                    height: "35vh",
-                    "pos-x": "45vw",
-                    "pos-y": "31vh",
-                };
-                const languagesHTML = `
-                    <h1>Languages</h1>
-                    <p><i>Python</i> and <i>HTML/CSS/JS/TS</i></p>
-                    <h2>Others:</h2>
-                    <p>I've written some <i>Rust</i> and <i>Bash</i> before</p>
-                    <p>I've also used <i>React</i> before</p>`;                
-            </script>
-            <div onclick="spawnWindow(aboutMeAttrs, aboutMeHTML)">
+            <div onclick="spawnAboutMe()">
                 About me
             </div>
-            <div onclick="spawnWindow(languagesAttrs, languagesHTML)">
+
+            <div onclick="spawnLanguages()">
                 Languages
             </div>
             <a href="https://github.com/yik-wee" target="_blank">
@@ -56,11 +25,24 @@
         </div>
     </div>
     <div id="windows">
-        <!--
-            To put dynamically later
-            definitely not the best way to do it but my brain is dead
-            send help
-        -->
+        <app-window title="About Me" height="28vh" width="30vw" pos-x="5vw" pos-y="25vh">
+            <h1>Koh Yik Wee</h1>
+            <p>Currently unemployed</p>
+            <p>
+                I make stuff I find interesting sometimes. You can find it on my
+                <object data="/assets/github.svg" type="image/svg+xml" width="20ch"></object>
+                <a href="https://github.com/yik-wee" target="_blank">GitHub</a>
+            </p>
+        </app-window>
+
+        <app-window title="Languages" height="35vh" width="30vw" pos-x="45vw" pos-y="31vh">
+            <h1>Languages</h1>
+            <p><i>Python</i> and <i>HTML/CSS/JS/TS</i></p>
+            <p>(I cannot c/c++ lmao)</p>
+            <h2>Others:</h2>
+            <p>I've written some <i>Rust</i> and <i>Bash</i> before</p>
+            <p>I've also used <i>React</i> before</p>
+        </app-window>
     </div>
 </body>
 
