@@ -150,19 +150,19 @@ window.onload = (e) => {
     const windowsContainer = document.getElementById("windows");
 
     const aboutMeId = appWindowPrefix + "about-me";
-    const aboutMe = getAppWindowById(aboutMeId);
+    const aboutMeWindow = getAppWindowById(aboutMeId);
     window.spawnAboutMe = () => {
         if (getAppWindowById(aboutMeId)) return;
-        windowsContainer.append(aboutMe);
+        windowsContainer.append(aboutMeWindow);
         // app-window elems alr init'd so connectedCallback/fadeIn won't be called again
-        aboutMe.fadeIn();
+        aboutMeWindow.fadeIn();
     };
 
     const languagesId = appWindowPrefix + "languages";
-    const languages = getAppWindowById(languagesId);
+    const languagesWindow = getAppWindowById(languagesId);
     window.spawnLanguages = () => {
         if (getAppWindowById(languagesId)) return;
-        windowsContainer.append(languages);
-        languages.fadeIn();
+        windowsContainer.append(languagesWindow);
+        languagesWindow.fadeIn();
     };
 };
