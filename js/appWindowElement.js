@@ -11,6 +11,7 @@ function makeDraggable(element, childElement) {
         e.preventDefault();
         pos3 = e.clientX || e.targetTouches[0].clientX;
         pos4 = e.clientY || e.targetTouches[0].clientY;
+        let [tx, ty] = [pos3, pos4];
 
         document.onmouseup = document.ontouchend = (e) => {
             document.onmouseup = null;
@@ -32,8 +33,38 @@ function makeDraggable(element, childElement) {
             e.preventDefault();
             const touchLocation = e.targetTouches[0];
 
-            element.style.top = touchLocation.pageY + "px";
-            element.style.left = touchLocation.pageX + "px";
+            /**
+             *  (0, 0)             P (x, y)
+             *                    |----(Tx, Ty)----|
+             *              <-dx->            | dy
+             *              P' (x', y')       |
+             *   [move] -> |----(Tx', Ty')---|
+             *
+             * where Ty' > Ty
+             *
+             * dx = Tx - Tx'
+             * dy = Ty - Ty'
+             * x' = x - dx
+             * y' = y - dy
+             */
+
+            const txPrime = touchLocation.clientX;
+            const tyPrime = touchLocation.clientY;
+            const dx = tx - txPrime;
+            const dy = ty - tyPrime;
+            const x = element.offsetLeft;
+            const y = element.offsetTop;
+            const xPrime = x - dx;
+            const yPrime = y - dy;
+
+            element.style.top = yPrime + "px";
+            element.style.left = xPrime + "px";
+
+            tx = txPrime;
+            ty = tyPrime;
+
+            // element.style.top = touchLocation.clientY + "px";
+            // element.style.left = touchLocation.clientX + "px";
         };
     };
 }
