@@ -59,8 +59,8 @@ async function getLanguages(languagesURL) {
 }
 
 function getCachedRepos() {
-    const cachedJSONString = localStorage.getItem("cachedRepos");
     try {
+        const cachedJSONString = localStorage.getItem("cachedRepos");
         // convert stored json string to js obj
         const cachedRepos = JSON.parse(cachedJSONString);
 
@@ -89,8 +89,16 @@ function getCachedRepos() {
     }
 }
 
+function getCachedTimestamp() {
+    try {
+        return parseInt(localStorage.getItem("timestamp")) || 0;
+    } catch (err) {
+        return 0;
+    }
+}
+
 async function filterRepos(username) {
-    const timestamp = parseInt(localStorage.getItem("timestamp")) || 0;
+    const timestamp = getCachedTimestamp();
     const timeNow = Date.now();
     const cachedReposByLanguage = getCachedRepos();
     const cacheDuration = 600_000; // 600_000 ms = 10 min before caching next API call
@@ -110,7 +118,7 @@ async function filterRepos(username) {
     // no cached repos found OR API cache has expired (10 min) -> new req
     let repos = await getRepos(username);
 
-    for (let repo of repos) {
+    for (const repo of repos) {
         const { name, languages_url, description } = repo;
 
         console.group(name);
@@ -140,8 +148,8 @@ async function filterRepos(username) {
  * @param {string} lang the languages to filter the repos by
  * @param {HTMLElement} container the container to display the repos in
  */
-function displayReposByLang(container, event, ...langs) {
-    if (event.originalTarget.className === "repo-hyperlink") return;
+function displayReposByLang(container, ...langs) {
+    if (container.className === "repo-hyperlink") return;
     /**
      * [
      *      {
@@ -164,22 +172,24 @@ function displayReposByLang(container, event, ...langs) {
         // repos of specified lang(s) undefined -> no such repos exist
         if (reposOfLang === undefined) {
             console.warn(`No repos written in ${langs}`);
-            return;
-        }
+            repos.push({
+                description: `I have no public repos written in ${lang} （;・・)ゞ`,
+            });
+        } else {
+            for (const repoInfo of reposOfLang) {
+                // the repo of `name` alr inside repos -> don't add duplicate
+                let exists = false;
 
-        for (const repoInfo of reposOfLang) {
-            // the repo of `name` alr inside repos -> don't add duplicate
-            let exists = false;
-
-            // linear search to find existing repo info (inefficient but wtv not many repos)
-            for (const existingRepoInfo of repos) {
-                if (existingRepoInfo.name === repoInfo.name) {
-                    exists = true;
-                    break;
+                // linear search to find existing repo info (inefficient but wtv not many repos)
+                for (const existingRepoInfo of repos) {
+                    if (existingRepoInfo.name === repoInfo.name) {
+                        exists = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!exists) repos.push(repoInfo); // no duplicates -> add
+                if (!exists) repos.push(repoInfo); // no duplicates -> add
+            }
         }
     }
 
@@ -201,19 +211,21 @@ function displayReposByLang(container, event, ...langs) {
 
     // add name & desc of each repo to display container
     for (const { name, description } of repos) {
-        const repoHyperlink = document.createElement("a");
-        repoHyperlink.setAttribute("href", `${repoBaseURL}/${name}`);
-        repoHyperlink.setAttribute("target", "_blank");
-        repoHyperlink.setAttribute("class", "repo-hyperlink");
-        repoHyperlink.textContent = name;
-
+        let repoHyperlink;
+        if (name !== undefined) {
+            repoHyperlink = document.createElement("a");
+            repoHyperlink.setAttribute("href", `${repoBaseURL}/${name}`);
+            repoHyperlink.setAttribute("target", "_blank");
+            repoHyperlink.setAttribute("class", "repo-hyperlink");
+            repoHyperlink.textContent = name;
+        }
         const descContainer = document.createElement("div");
         descContainer.setAttribute("class", "repo-description");
         descContainer.textContent = description;
 
         const repoInfoContainer = document.createElement("div");
         repoInfoContainer.setAttribute("class", "repo");
-        repoInfoContainer.append(repoHyperlink, descContainer);
+        repoInfoContainer.append(repoHyperlink || "", descContainer);
         reposSpan.append(repoInfoContainer);
     }
 
