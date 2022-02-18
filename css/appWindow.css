@@ -83,10 +83,19 @@ h1 {
     border-bottom: 4px solid #FFBF7F;
 }
 
-.repo-hyperlink {
+.repo {
     display: block;
+    margin-bottom: 4px;
+}
+
+.repo-hyperlink {
+    text-decoration: none;
+    color: inherit;
+    background-color: #ff7f7f77;
+    border-bottom: 2px solid #FF7F7F;
+    margin-bottom: 2px;
 }
 
 .repo-hyperlink::before {
-    content: "->";
+    content: "-> ";
 }
