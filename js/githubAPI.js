@@ -101,7 +101,7 @@ async function filterRepos(username) {
     const timestamp = getCachedTimestamp();
     const timeNow = Date.now();
     const cachedReposByLanguage = getCachedRepos();
-    const cacheDuration = 600_000; // 600_000 ms = 10 min before caching next API call
+    const cacheDuration = 3_600_000; // 600_000 ms = 1h before caching next API call
 
     // cached repos exist and API cache not expired
     if (
@@ -115,7 +115,7 @@ async function filterRepos(username) {
         return;
     }
 
-    // no cached repos found OR API cache has expired (10 min) -> new req
+    // no cached repos found OR API cache has expired (1h) -> new req
     let repos = await getRepos(username);
 
     for (const repo of repos) {
