@@ -1,4 +1,4 @@
-const appWindowPrefix = "app-window-";
+const APP_WINDOW_PREFIX = "app-window-";
 
 /**
  *
@@ -77,6 +77,9 @@ class AppWindow extends HTMLElement {
         AppWindow.activeWindows.push(this);
     }
 
+    /**
+     * Runs when a new AppWindow is created in the DOM (e.g. when loading the HTML)
+     */
     connectedCallback() {
         let shadow = this.attachShadow({ mode: "open" });
 
@@ -102,8 +105,8 @@ class AppWindow extends HTMLElement {
         // id not set - auto set id
         // e.g. <app-window title="About Me" id="app-window-about-me"></app-window>
         if (!this.getAttribute("id")) {
-            const thisId =
-                appWindowPrefix + title.trim().toLowerCase().replace(" ", "-");
+            const thisId = APP_WINDOW_PREFIX 
+                + title.trim().toLowerCase().replace(" ", "-");
             this.setAttribute("id", thisId);
         }
 
@@ -111,9 +114,9 @@ class AppWindow extends HTMLElement {
         quitButton.setAttribute("class", "quit-button");
         quitButton.textContent = "x";
 
-        // click/touchstart to remove window
-        quitButton.addEventListener("click", this.remove.bind(this));
-        quitButton.addEventListener("touchstart", this.remove.bind(this));
+        // Note: touchstart event is for mobile/touchscreens
+        quitButton.addEventListener("click", this.hide.bind(this));
+        quitButton.addEventListener("touchstart", this.hide.bind(this));
 
         top.append(titleArea, quitButton);
 
@@ -124,7 +127,7 @@ class AppWindow extends HTMLElement {
         this.onclick = this.ontouchstart = (e) => {
             if (this.isFocussed()) return;
 
-            // in case >1 windows focussed (ppl hackermans the html)
+            // in case >1 windows focussed
             for (const win of AppWindow.activeWindows) {
                 if (win.isFocussed()) {
                     win.unfocusAppWindow();
@@ -154,6 +157,14 @@ class AppWindow extends HTMLElement {
         this.fadeIn();
     }
 
+    hide() {
+        this.style.visibility = "hidden";
+    }
+
+    show() {
+        this.style.visibility = "visible";
+    }
+
     fadeIn() {
         this.animate([{ opacity: "0" }, { opacity: "1" }], { duration: 250 });
     }
@@ -169,31 +180,28 @@ class AppWindow extends HTMLElement {
     focusAppWindow() {
         this.wrapper.classList.add("window-focus");
     }
+
+    /**
+     * create an anonymous function that spawns a new app-window specified by `appWindowId`
+     * @param {string} appWindowId 
+     * @param {HTMLElement | null} windowsContainer
+     * @returns an anonymous function used to spawn a new window
+     */
+    static createWindowSpawner(appWindowId) {
+        appWindowId = APP_WINDOW_PREFIX + appWindowId;
+        let appWindow = document.getElementById(appWindowId);
+        return () => {
+            if (appWindow.style.visibility === "hidden") {
+                appWindow.show();
+                appWindow.fadeIn();
+            }
+        };
+    }
 }
 
 customElements.define("app-window", AppWindow);
 
-function getAppWindowById(id) {
-    return document.getElementById(id);
-}
-
-window.onload = (e) => {
-    const windowsContainer = document.getElementById("windows");
-
-    const aboutMeId = appWindowPrefix + "about-me";
-    const aboutMeWindow = getAppWindowById(aboutMeId);
-    window.spawnAboutMe = () => {
-        if (getAppWindowById(aboutMeId)) return;
-        windowsContainer.append(aboutMeWindow);
-        // app-window elems alr init'd so connectedCallback/fadeIn won't be called again
-        aboutMeWindow.fadeIn();
-    };
-
-    const languagesId = appWindowPrefix + "languages";
-    const languagesWindow = getAppWindowById(languagesId);
-    window.spawnLanguages = () => {
-        if (getAppWindowById(languagesId)) return;
-        windowsContainer.append(languagesWindow);
-        languagesWindow.fadeIn();
-    };
+window.onload = (_) => {
+    window.spawnAboutMe = AppWindow.createWindowSpawner("about-me");
+    window.spawnInterests = AppWindow.createWindowSpawner("interests");
 };

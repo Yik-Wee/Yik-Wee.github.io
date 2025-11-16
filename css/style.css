@@ -11,9 +11,10 @@ body {
 }
 
 .desktop {
-    width: 100%;
-    background-image: url('https://github.com/yik-wee.png');
-    background-position: center;
+    height: 100vh;
+    background-size: max(20vh, 15vw);
+    background-image: url('/assets/yellow-emoji-typing.gif');
+    background-position: top;
     background-repeat: no-repeat;
     text-align: center;
 }
