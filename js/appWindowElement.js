@@ -124,7 +124,7 @@ class AppWindow extends HTMLElement {
         makeDraggable(wrapper, top);
 
         // make focussable (z-index++ on click)
-        this.onclick = this.ontouchstart = (e) => {
+        this.onclick = this.onmousedown = this.ontouchstart = (e) => {
             if (this.isFocussed()) return;
 
             // in case >1 windows focussed
